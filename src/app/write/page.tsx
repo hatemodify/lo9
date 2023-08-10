@@ -4,7 +4,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import { uid } from "uid";
 
 import writePosting from '../middleware/write';
-
+declare const tinymce:any
 
 export default function App() {
   const editorRef = useRef<any>(null);
@@ -64,7 +64,7 @@ export default function App() {
           /* enable automatic uploads of images represented by blob or data URIs*/
           file_picker_types: 'image',
           file_picker_callback: function (cb, value, meta) {
-            const input = document.createElement('input')
+            const input: any = document.createElement('input')
             input.setAttribute('type', 'file')
             input.setAttribute('accept', 'image/*')
 
@@ -79,10 +79,10 @@ export default function App() {
             input.onchange = function () {
               const file = this.files[0]
 
-              let reader = new FileReader()
+              let reader: any = new FileReader()
               reader.onload = function () {
                 const id = 'blobid' + new Date().getTime()
-                const blobCache = tinymce.activeEditor.editorUpload.blobCache
+                const blobCache: any = tinymce.activeEditor.editorUpload.blobCache
                 const base64 = reader.result.split(',')[1]
                 const blobInfo = blobCache.create(id, file, base64)
                 blobCache.add(blobInfo)
