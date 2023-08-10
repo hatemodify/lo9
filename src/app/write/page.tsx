@@ -34,6 +34,8 @@ export default function App() {
     writePosting({ title, contents, base64Array })
   };
 
+  console.log(process.env.REACT_APP_UNSPLASH_TOKEN)
+
   return (
     <>
       <input type='text' value={title} onChange={({ target }) => setTitle(target.value)} />
