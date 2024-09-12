@@ -1,40 +1,71 @@
 'use client'
-import React, { useRef, useState } from 'react';
-import { Editor } from '@tinymce/tinymce-react';
-import { uid } from "uid";
+import React, { useEffect, useRef, useState } from 'react'
+import { Editor } from '@tinymce/tinymce-react'
+import { uid } from "uid"
 
-import writePosting from '../middleware/write';
-declare const tinymce:any
+import writePosting from '../middleware/write'
+import { UNSPLASH_API } from '../api'
+import { useRouter } from 'next/navigation'
+declare const tinymce: any
 
 export default function App() {
-  const editorRef = useRef<any>(null);
-
-
+  const editorRef = useRef<any>(null)
   const [category, setCategory] = useState()
   const [title, setTitle] = useState<any>('')
+  const accessKey = process.env.NEXT_PUBLIC_UNSPLASH_TOKEN
+  const [thumbnail, setThumbnail] = useState<null | string>(null)
+  const router = useRouter()
+
+  const getRandomImage = async () => {
+    try {
+      const response = await fetch(UNSPLASH_API(), {
+        headers: {
+          'Authorization': `Client-ID ${accessKey}`
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok')
+      }
+
+      const data = await response.json()
+      return data.urls.regular
+    } catch (error) {
+      console.error('Error fetching the random image:', error)
+    }
+  }
+
+
 
   const extractImageInfo = (content: any) => {
     const srcReg = /([^>"']*(?:base64)+[^>"']+)["']?[^>]*>/g
     const nameReg: any = /<img[^>]*title=[\"']?([^>\"']+)[\"']?[^>]*>/g
-    const imageSrc = []
+    const imageList = []
     let html
     while ((html = srcReg.exec(content))) {
-      imageSrc.push({
+      imageList.push({
         src: html[1],
-        name: nameReg?.exec(content)[1],
+        name: uid()
       })
     }
-    return imageSrc
+    return imageList
   }
 
 
   const write = () => {
     const contents = editorRef.current.getContent()
     const base64Array = extractImageInfo(contents)
-    writePosting({ title, contents, base64Array })
-  };
+    writePosting({ thumbnail, title, contents, base64Array }).then(() => router.push('/'))
+  }
 
-  console.log(process.env.REACT_APP_UNSPLASH_TOKEN)
+
+
+  useEffect(() => {
+    getRandomImage().then((res) => {
+      setThumbnail(res)
+    })
+  }, [])
+
 
   return (
     <>
@@ -59,7 +90,7 @@ export default function App() {
             'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount', 'codesample',
           ],
           toolbar: 'undo redo | blocks fontfamily fontsize forecolor backcolor| bold italic underline strikethrough | link emoticons image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent |  charmap | removeformat | codesample',
-          content_style: 'body {font - family:Helvetica,Arial,sans-serif; font-size:14px }',
+          content_style: 'body {font - family:Helvetica,Arial,sans-serif font-size:14px }',
           image_title: true,
           /* enable automatic uploads of images represented by blob or data URIs*/
           file_picker_types: 'image',
@@ -98,5 +129,5 @@ export default function App() {
       />
       <button onClick={write}>write</button>
     </>
-  );
+  )
 }

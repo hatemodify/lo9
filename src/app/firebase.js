@@ -12,7 +12,7 @@ import { getStorage, ref, uploadBytes } from 'firebase/storage';
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-	apiKey: process.env.FIREBASE_API_KEY,
+	apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
 	authDomain: 'lo9today-c3cbc.firebaseapp.com',
 	databaseURL:
 		'https://lo9today-c3cbc-default-rtdb.asia-southeast1.firebasedatabase.app',

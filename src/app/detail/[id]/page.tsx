@@ -1,7 +1,6 @@
 
-"use client"
 import { ref, child, get } from "firebase/database";
-import { rdb } from "@/app/firebase";
+import { rdb } from "../../firebase";
 import parse from 'html-react-parser'
 
 
@@ -23,12 +22,11 @@ const fetchPost = async (id: string) => {
 
 export default async function Page({ params }: any) {
   const { id } = params
-  const { title, contents } = await fetchPost(id)
+  const { title, contents, thumbnail } = await fetchPost(id)
   return (
-    <>
-      <div>
-        {parse(contents)}
-      </div>
-    </>
+    <div>
+      <img src={thumbnail} alt='' />
+      {parse(contents)}
+    </div>
   )
 }
