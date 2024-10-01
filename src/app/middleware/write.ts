@@ -2,7 +2,6 @@ import { ref, uploadString, getDownloadURL } from 'firebase/storage'
 import { storage, rdb } from '../firebase'
 import { ref as dbRef, set } from 'firebase/database'
 import { uid } from 'uid'
-import { redirect } from 'next/navigation'
 
 const newImageData: any[] = []
 
@@ -32,7 +31,7 @@ const replaceUrl = (arr: any[], data: any) => {
 	return data
 }
 
-export default function writePosting(_req: any) {
+export default async function  writePosting(_req: any) {
 	const uuid = uid()
 	uploadImage(_req.base64Array, newImageData, _req.contents).then((res) => {
 		set(dbRef(rdb, 'posting/' + uuid), {

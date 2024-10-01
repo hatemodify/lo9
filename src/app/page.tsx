@@ -21,7 +21,7 @@ const weatherKeywords = [
   "frosty trees",
   "desert heat",
 ]
-const keyword = weatherKeywords[Math.floor(Math.random() * weatherKeywords.length)];
+const keyword = weatherKeywords[Math.floor(Math.random() * weatherKeywords.length)]
 const getBgImage = async (keyword: string) => {
   try {
     const response = await fetch(searchImage(keyword), {
